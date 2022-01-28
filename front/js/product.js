@@ -1,13 +1,47 @@
-//Faire le lien entre un produit de la page d’accueil et la page Produit
+//fonction auto-invoquée: une fois les produits IDs récupérés, afficher les produits selon leurs ids
+(async function(){
+  const productId = getProductId();
+  const product = await getProduct(productId);
+  hydrateProduct(product);
+})();
 
-var str = window.location.href;
-var url = new URL(str);
-var search_params = new URLSearchParams(url.search); 
-
-if(search_params.has('id')) {
-  var productId = search_params.get('id');
-  console.log('id :'+productId);
-} else {
-    console.log("Le produit que vous avez demandé n'existe pas.");
+//récupérer le produit ID (un paramètre d'URL) depuis l'URL de la page courante
+function getProductId () {
+  return new URL(location.href).searchParams.get("id");
+ 
 }
 
+//récupérer le produit selon le produit ID depuis la porte 3000 d'API
+function getProduct (productId) {
+  return fetch(`http://localhost:3000/api/products/${productId}`)
+   .then (function(httpBodyResponse) {
+     return httpBodyResponse.json();
+   })
+   .then (function(products) {
+     return products;
+   })
+   .catch (function(error){
+     alert(error)
+   })
+}
+
+//afficher les infos (image, prix, description, couleurs) du produit 
+function hydrateProduct (product) {
+  
+  const productImage = document.createElement("img");
+  document.getElementsByClassName("item__img")[0].appendChild(productImage);
+  productImage.src = `${product.imageUrl}`;
+
+  const productPrice = document.getElementById("price");
+  productPrice.textContent = `${product.price}`;
+
+  const productDescription = document.getElementById("description");
+  productDescription.textContent = `${product.description}`;
+
+  const productColors = document.getElementById("colors");
+    for (let i=0; i < product.colors.length; i++) {
+    const productColorsOption = document.createElement("option");
+    productColors.appendChild(productColorsOption);
+    productColorsOption.textContent = `${product.colors[i]}`;
+  }
+}

@@ -8,7 +8,6 @@
 //récupérer le produit ID (un paramètre d'URL) depuis l'URL de la page courante
 function getProductId () {
   return new URL(location.href).searchParams.get("id");
- 
 }
 
 //récupérer le produit selon le produit ID depuis la porte 3000 d'API
@@ -25,12 +24,16 @@ function getProduct (productId) {
    })
 }
 
-//afficher les infos (image, prix, description, couleurs) du produit 
+//afficher les infos (image, nom, prix, description, couleurs) du produit 
 function hydrateProduct (product) {
   
   const productImage = document.createElement("img");
   document.getElementsByClassName("item__img")[0].appendChild(productImage);
   productImage.src = `${product.imageUrl}`;
+  productImage.alt = `${product.altTxt}`;
+
+  const productName = document.getElementById("title");
+  productName.textContent = `${product.name}`;
 
   const productPrice = document.getElementById("price");
   productPrice.textContent = `${product.price}`;
@@ -39,6 +42,7 @@ function hydrateProduct (product) {
   productDescription.textContent = `${product.description}`;
 
   const productColors = document.getElementById("colors");
+  //fonction pour faire afficher les options couleurs du produit
     for (let i=0; i < product.colors.length; i++) {
     const productColorsOption = document.createElement("option");
     productColors.appendChild(productColorsOption);

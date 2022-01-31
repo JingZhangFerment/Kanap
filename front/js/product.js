@@ -1,32 +1,31 @@
 //fonction auto-invoquée: une fois les produits IDs récupérés, afficher les produits selon leurs ids
-(async function(){
+(async function () {
   const productId = getProductId();
   const product = await getProduct(productId);
   hydrateProduct(product);
 })();
 
 //récupérer le produit ID (un paramètre d'URL) depuis l'URL de la page courante
-function getProductId () {
+function getProductId() {
   return new URL(location.href).searchParams.get("id");
 }
 
-//récupérer le produit selon le produit ID depuis la porte 3000 d'API
-function getProduct (productId) {
+//récupérer new URL(location.href).searchParams.get("id");le produit selon le produit ID depuis la porte 3000 d'API
+function getProduct(productId) {
   return fetch(`http://localhost:3000/api/products/${productId}`)
-   .then (function(httpBodyResponse) {
-     return httpBodyResponse.json();
-   })
-   .then (function(products) {
-     return products;
-   })
-   .catch (function(error){
-     alert(error)
-   })
+    .then(function (httpBodyResponse) {
+      return httpBodyResponse.json();
+    })
+    .then(function (products) {
+      return products;
+    })
+    .catch(function (error) {
+      alert(error);
+    });
 }
 
-//afficher les infos (image, nom, prix, description, couleurs) du produit 
-function hydrateProduct (product) {
-  
+//afficher les infos (image, nom, prix, description, couleurs) du produit
+function hydrateProduct(product) {
   const productImage = document.createElement("img");
   document.getElementsByClassName("item__img")[0].appendChild(productImage);
   productImage.src = `${product.imageUrl}`;
@@ -43,9 +42,30 @@ function hydrateProduct (product) {
 
   const productColors = document.getElementById("colors");
   //fonction pour faire afficher les options couleurs du produit
-    for (let i=0; i < product.colors.length; i++) {
+  for (let i = 0; i < product.colors.length; i++) {
     const productColorsOption = document.createElement("option");
     productColors.appendChild(productColorsOption);
     productColorsOption.textContent = `${product.colors[i]}`;
   }
+}
+
+const addToCart = document.getElementById("addToCart");
+
+//enregistrer les modifications lors du click de la bouton "ajouter du panier"
+addToCart.addEventListener("click", function (event) {
+  // créer un array du produit (id, couleur,quantité)
+  let productAdded = {
+    id: getProductId(),
+    color: document.getElementById("colors").value,
+    quantity: document.getElementById("quantity").value,
+  };
+
+  populateStorage(productAdded);
+});
+
+//fonction pour enregistrer la clé/valeur au local stockage
+function populateStorage(productAdded) {
+  //transformer l'objet en chaîne de caractère
+  let itemToStore = JSON.stringify(productAdded);
+  localStorage.setItem("itemToStore", itemToStore);
 }

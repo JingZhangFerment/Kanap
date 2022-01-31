@@ -1,4 +1,4 @@
-//fonction auto-invoquée: une fois les produits récupérés, afficher les.
+//fonction auto-invoquée: une fois les produits récupérés, afficher les informations des produits.
 (async function() {
   const products = await getProducts()
   
@@ -21,7 +21,7 @@ function getProducts() {
    })
 }
 
-//afficher les produits sur la page d'accueil 
+//afficher les informations des produits sur la page d'accueil 
 function displayProduct (product) {
   const productLink = document.createElement("a");
   document.getElementById("items").appendChild(productLink);

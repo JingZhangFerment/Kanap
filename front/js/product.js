@@ -28,44 +28,91 @@ function getProduct(productId) {
 function hydrateProduct(product) {
   const productImage = document.createElement("img");
   document.getElementsByClassName("item__img")[0].appendChild(productImage);
-  productImage.src = `${product.imageUrl}`;
-  productImage.alt = `${product.altTxt}`;
+  productImage.src = product.imageUrl;
+  productImage.alt = product.altTxt;
 
   const productName = document.getElementById("title");
-  productName.textContent = `${product.name}`;
+  productName.textContent = product.name;
 
   const productPrice = document.getElementById("price");
-  productPrice.textContent = `${product.price}`;
+  productPrice.textContent = product.price;
 
   const productDescription = document.getElementById("description");
-  productDescription.textContent = `${product.description}`;
+  productDescription.textContent = product.description;
 
-  const productColors = document.getElementById("colors");
   //fonction pour faire afficher les options couleurs du produit
-  for (let i = 0; i < product.colors.length; i++) {
+  product.colors.forEach((color) => {
     const productColorsOption = document.createElement("option");
+    const productColors = document.getElementById("colors");
     productColors.appendChild(productColorsOption);
-    productColorsOption.textContent = `${product.colors[i]}`;
-  }
+    productColorsOption.textContent = color;
+    productColorsOption.value = color;
+    console.log(color);
+  });
 }
 
+//-----LOCAL STORAGE-------
+//enregistrer les modifications lors de chaque click de la bouton "ajouter du panier"
 const addToCart = document.getElementById("addToCart");
 
-//enregistrer les modifications lors du click de la bouton "ajouter du panier"
 addToCart.addEventListener("click", function (event) {
-  // créer un array du produit (id, couleur,quantité)
+  // créer un tableau du produit (id, couleur,quantité)
   let productAdded = {
     id: getProductId(),
     color: document.getElementById("colors").value,
     quantity: document.getElementById("quantity").value,
   };
 
-  populateStorage(productAdded);
+  // créer une variable pour la liste des produits
+  let productList = [];
+
+  populateStorage(productList);
 });
 
-//fonction pour enregistrer la clé/valeur au local stockage
+//fonction pour enregistrer la clé/valeur au localStorage
 function populateStorage(productAdded) {
   //transformer l'objet en chaîne de caractère
-  let itemToStore = JSON.stringify(productAdded);
-  localStorage.setItem("itemToStore", itemToStore);
+  localStorage.setItem("productAdded", JSON.stringify(productAdded));
+}
+
+//fonction pour récupérer les données du localStorage s'il y en a
+function getStorage() {
+  let productAdded = localStorage.getItem("productAdded");
+  if (productAdded == null) {
+    return [];
+  } else {
+    return JSON.parse(productAdded);
+  }
+}
+
+function addStorage() {
+  let productAdded = getStorage();
+  // verifier s'il y a déjà des produits dans le localStorage
+  if (productList) {
+    productList.push(productAdded);
+    console.log(productList);
+    popupConfirmation();
+  } else {
+    // verifier s'il n'y a pas de produits enregistré dans le localStorage
+    productList = [];
+    productList.push(productAdded);
+    console.log(productList);
+    popupConfirmation();
+  }
+}
+
+//fonction pour confirmer le choix du panier
+function popupConfirmation() {
+  if (
+    window.confirm(`Votre produit "${
+      document.getElementById("title").textContent
+    }", 
+  couleur: ${document.getElementById("colors").value}, 
+  quantité: ${document.getElementById("quantity").value}, 
+  a bien été ajouté au panier.`)
+  ) {
+    window.location.href = "cart.html";
+  } else {
+    window.location.href = "product.html";
+  }
 }

@@ -56,7 +56,6 @@ function hydrateProduct(product) {
 const addToCart = document.getElementById("addToCart");
 
 addToCart.addEventListener("click", function (event) {
-
   let productToAddIntoCart = {
     id: getProductId(),
     color: document.getElementById("colors").value,
@@ -68,7 +67,7 @@ addToCart.addEventListener("click", function (event) {
 
 //enregistrer le panier dans le localStorage par clé/valeur
 function saveToLocalStorage(myCart) {
-//transformer la valeur en javascript en chaîne de caractère JSON
+  //transformer la valeur en javascript en chaîne de caractère JSON
   localStorage.setItem("myCart", JSON.stringify(myCart));
 }
 
@@ -84,14 +83,30 @@ function getCartDataFromStorage() {
   }
 }
 
-//fonction pour ajouter les produits dans le localStorage
+//fonction pour ajouter un produit nouveau ou exisitant (??) dans le localStorage
+//gérer le cas où les options ne sont pas remplies
+//gérer le cas où valeur pas possible
+
 function addProductToCartIntoStorage(newProduct) {
   let savedProducts = getCartDataFromStorage();
   // verifier le cas où il y a déjà des produits enregistrés dans le localStorage
-  if (savedProducts = productToAddIntoCart) {
-    quantity: document.getElementById("quantity").value [++1]
-  } else if {
-    savedProducts.push(newProduct);
+  if (savedProducts.length > 0) {
+    // si on trouve dans le panier une ligne avec la meme couleur et le meme ID
+    savedProducts.forEach((oneItemOfSavedProduct) => {
+      if (
+        oneItemOfSavedProduct.id == newProduct.id &&
+        oneItemOfSavedProduct.color == newProduct.color
+      ) {
+        let newProductQtyInt = parseInt(newProduct.quantity);
+        let oneItemOfSavedProductQtyInt = parseInt(
+          oneItemOfSavedProduct.quantity
+        );
+        oneItemOfSavedProduct.quantity =
+          newProductQtyInt + oneItemOfSavedProductQtyInt;
+      } else {
+        savedProducts.push(newProduct);
+      }
+    });
     popupConfirmation();
   } else {
     savedProducts = [];
@@ -104,16 +119,12 @@ function addProductToCartIntoStorage(newProduct) {
 
 //fonction pour confirmer le choix du panier
 function popupConfirmation() {
-  if (
-    window.confirm(`Votre produit "${
-      document.getElementById("title").textContent
-    }", 
+  window.confirm(`Votre produit "${
+    document.getElementById("title").textContent
+  }", 
   couleur: ${document.getElementById("colors").value}, 
   quantité: ${document.getElementById("quantity").value}, 
-  a bien été ajouté au panier.`)
-  ) {
-    window.location.href = "cart.html";
-  } else {
-    window.location.href = "product.html";
-  }
+  a bien été ajouté au panier.`);
+
+  window.location.href = new URL(location.href);
 }

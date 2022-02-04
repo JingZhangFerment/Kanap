@@ -1,4 +1,4 @@
-//fonction auto-invoquée: une fois les produits IDs récupérés, afficher les produits selon leurs ids
+//une fois les produits IDs récupérés, afficher les produits selon leurs ids
 (async function () {
   const productId = getProductId();
   const product = await getProduct(productId);
@@ -40,7 +40,7 @@ function hydrateProduct(product) {
   const productDescription = document.getElementById("description");
   productDescription.textContent = product.description;
 
-  //fonction pour faire afficher les options couleurs du produit
+  //faire afficher les options couleurs du produit
   product.colors.forEach((color) => {
     const productColorsOption = document.createElement("option");
     const productColors = document.getElementById("colors");
@@ -62,12 +62,29 @@ addToCart.addEventListener("click", function (event) {
     quantity: document.getElementById("quantity").value,
   };
 
-  addProductToCartIntoStorage(productToAddIntoCart);
+  let isValid = true;
+
+  //gérer le cas où la couleur du produit n'est pas remplie
+  if (productToAddIntoCart.color == "") {
+    isValid = false;
+    window.alert("Veuillez sélectionner une couleur pour le canapé.");
+  }
+  //gérer le cas où il y a une valeur (>100 ou <1) pour la quantité du produit
+  if (
+    productToAddIntoCart.quantity > 100 ||
+    productToAddIntoCart.quantity < 1
+  ) {
+    isValid = false;
+    window.alert("Veuillez sélectionner une quantité entre 1 et 100. ");
+  }
+
+  if (isValid) {
+    addProductToCartIntoStorage(productToAddIntoCart);
+  }
 });
 
-//enregistrer le panier dans le localStorage par clé/valeur
+//enregistrer le panier en chaîne de caractère dans le localStorage par clé/valeur
 function saveToLocalStorage(myCart) {
-  //transformer la valeur en javascript en chaîne de caractère JSON
   localStorage.setItem("myCart", JSON.stringify(myCart));
 }
 
@@ -83,16 +100,14 @@ function getCartDataFromStorage() {
   }
 }
 
-//fonction pour ajouter un produit nouveau ou exisitant (??) dans le localStorage
-//gérer le cas où les options ne sont pas remplies
-//gérer le cas où valeur pas possible
+//ajouter un produit nouveau ou exisitant dans le localStorage
 
 function addProductToCartIntoStorage(newProduct) {
   let savedProducts = getCartDataFromStorage();
-  // verifier le cas où il y a déjà des produits enregistrés dans le localStorage
+  // s'il y a déjà des produits enregistrés dans le localStorage
   if (savedProducts.length > 0) {
-    // si on trouve dans le panier une ligne avec la meme couleur et le meme ID
     savedProducts.forEach((oneItemOfSavedProduct) => {
+      // si on trouve dans le panier une ligne avec la meme couleur et le meme ID
       if (
         oneItemOfSavedProduct.id == newProduct.id &&
         oneItemOfSavedProduct.color == newProduct.color
@@ -113,7 +128,6 @@ function addProductToCartIntoStorage(newProduct) {
     savedProducts.push(newProduct);
     popupConfirmation();
   }
-
   saveToLocalStorage(savedProducts);
 }
 

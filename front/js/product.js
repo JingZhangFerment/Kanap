@@ -16,8 +16,8 @@ function getProduct(productId) {
     .then(function (httpBodyResponse) {
       return httpBodyResponse.json();
     })
-    .then(function (products) {
-      return products;
+    .then(function (product) {
+      return product;
     })
     .catch(function (error) {
       alert(error);
@@ -107,7 +107,7 @@ function addProductToCartIntoStorage(newProduct) {
   // s'il y a déjà des produits enregistrés dans le localStorage
   if (savedProducts.length > 0) {
     savedProducts.forEach((oneItemOfSavedProduct) => {
-      // si on trouve dans le panier une ligne avec la meme couleur et le meme ID
+      // si le produit est déjà présent (même id + couleur)
       if (
         oneItemOfSavedProduct.id == newProduct.id &&
         oneItemOfSavedProduct.color == newProduct.color
@@ -128,10 +128,11 @@ function addProductToCartIntoStorage(newProduct) {
     savedProducts.push(newProduct);
     popupConfirmation();
   }
+
   saveToLocalStorage(savedProducts);
 }
 
-//fonction pour confirmer le choix du panier
+//message de confirmation pour le choix du panier
 function popupConfirmation() {
   window.confirm(`Votre produit "${
     document.getElementById("title").textContent
@@ -140,5 +141,5 @@ function popupConfirmation() {
   quantité: ${document.getElementById("quantity").value}, 
   a bien été ajouté au panier.`);
 
-  window.location.href = new URL(location.href);
+  window.location.href = "cart.html";
 }

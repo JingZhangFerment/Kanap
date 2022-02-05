@@ -1,6 +1,6 @@
 //récupérer les données enregistrées des produits dans le localStorage
-let myCart = localStorage.getItem("myCart");
-let getCartDataFromLocalStorage = JSON.parse(myCart);
+const myCart = localStorage.getItem("myCart");
+const getCartDataFromLocalStorage = JSON.parse(myCart);
 
 //récupérer les données des produits selon le produit ID depuis la porte 3000 d'API
 function getProduct(productId) {
@@ -16,17 +16,16 @@ function getProduct(productId) {
     });
 }
 
-//récuperer les données (id, color, quantity, image, alt, nom, prix) 
-getCartDataFromLocalStorage.forEach(async(cartData) => {
-  
+//afficher les données (id, color, quantity, image, alt, nom, prix)
+getCartDataFromLocalStorage.forEach(async (cartData) => {
   const productDataFromApi = await getProduct(cartData.id);
 
   //insertion de la balise "article"
   const cartItem = document.createElement("article");
   document.querySelector("#cart__items").appendChild(cartItem);
   cartItem.classList.add("cart__item");
-  cartItem.setAttribute("data-id",cartData.id);
-  cartItem.setAttribute("data-color",cartData.color);
+  cartItem.setAttribute("data-id", cartData.id);
+  cartItem.setAttribute("data-color", cartData.color);
 
   //insertion de la div "cart__item__img"
   const cartItemDivImage = document.createElement("div");
@@ -53,12 +52,11 @@ getCartDataFromLocalStorage.forEach(async(cartData) => {
   const cartItemName = document.createElement("h2");
   cartItemContentDescription.appendChild(cartItemName);
   cartItemName.textContent = productDataFromApi.name;
-  
 
   //insertion de <p> pour la couleur
   const cartItemColor = document.createElement("p");
   cartItemContentDescription.appendChild(cartItemColor);
-  cartItemName.textContent = cartData.color;
+  cartItemColor.textContent = cartData.color;
 
   //insertion de <p> pour le prix
   const cartItemPrice = document.createElement("p");
@@ -71,7 +69,44 @@ getCartDataFromLocalStorage.forEach(async(cartData) => {
   cartItemContentSettings.classList.add("cart__item__content__settings");
 
   //insertion de la div "cart__item__content__settings__quantity"
+  const cartItemContentSettingsQuantity = document.createElement("div");
+  cartItemContentSettings.appendChild(cartItemContentSettingsQuantity);
+  cartItemContentSettingsQuantity.classList.add(
+    "cart__item__content__settings__quantity"
+  );
 
-  //insertion de la div "cart__item__content__settings__delete"
- 
+  //insertion de "Qté :"
+  const cartItemDivQuantity = document.createElement("p");
+  cartItemContentSettingsQuantity.appendChild(cartItemDivQuantity);
+  cartItemDivQuantity.textContent = "Qté :";
+
+  //insertion de <input> pour la quantité
+  const cartItemQuantity = document.createElement("input");
+  cartItemContentSettingsQuantity.appendChild(cartItemQuantity);
+  cartItemQuantity.classList.add("itemQuantity");
+  cartItemQuantity.setAttribute("type", "number");
+  cartItemQuantity.setAttribute("name", "itemQuantity");
+  cartItemQuantity.setAttribute("min", "1");
+  cartItemQuantity.setAttribute("max", "100");
+  cartItemQuantity.setAttribute("value", cartData.quantity);
+
+  //insertion de div "cart__item__content__settings__delete"
+  const cartItemContentSettingsDelete = document.createElement("div");
+  cartItemContentSettings.appendChild(cartItemContentSettingsDelete);
+  cartItemContentSettingsDelete.classList.add(
+    "cart__item__content__settings__delete"
+  );
+
+  //insertion de <p> "deleteItem"
+  const deleteItem = document.createElement("p");
+  cartItemContentSettingsDelete.appendChild(deleteItem);
+  deleteItem.classList.add("deleteItem");
+  deleteItem.textContent = "Supprimer";
+
+  //supprimer les produits lors de chaque click sur "supprimer"
+  deleteItem.addEventListener("click", function (event) {
+    let itemQuantity = cartData.quantity;
+    let itemQuantityAfterDelete = itemQuantity--;
+    console.log(itemQuantityAfterDelete) ;
+  });
 });

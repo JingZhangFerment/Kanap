@@ -56,6 +56,9 @@ function hydrateProduct(product) {
 const addToCart = document.getElementById("addToCart");
 
 addToCart.addEventListener("click", function (event) {
+
+  event.preventDefault();
+  
   let productToAddIntoCart = {
     id: getProductId(),
     color: document.getElementById("colors").value,
@@ -145,7 +148,8 @@ function popupConfirmation() {
   }", 
   couleur: ${document.getElementById("colors").value}, 
   quantité: ${document.getElementById("quantity").value}, 
-  a bien été ajouté au panier. Consultez le panier, appuyez OK sinon annuler pour modifier.`)) {
+  a bien été ajouté au panier. 
+  Appuyez "OK" pour consulter le panier ou "annuler" pour modifier.`)) {
     window.location.href = "cart.html";
   } else {
     window.location;

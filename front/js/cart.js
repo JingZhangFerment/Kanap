@@ -305,7 +305,7 @@ cartOrderForm.email.addEventListener("change", function () {
 //validation du prénom
 function validFirstName(inputFirstName) {
   //création de la reg exp pour valider prénom
-  let firstNameRegExp = new RegExp("^[a-zA-Z ,.'-]{2,}$", "g");
+  let firstNameRegExp = new RegExp("^[a-zA-ZÀ-ÿ ,.'-]{2,}$", "g");
 
   let testFirstName = firstNameRegExp.test(inputFirstName.value);
   let firstNameErrorMsg = inputFirstName.nextElementSibling;
@@ -314,8 +314,7 @@ function validFirstName(inputFirstName) {
     firstNameErrorMsg.textContent = " ";
     return true;
   } else {
-    firstNameErrorMsg.textContent =
-      "Minimum 2 caractères et sans caractères spéciaux.";
+    firstNameErrorMsg.textContent = "Minimum 2 caractères, lettres uniquement.";
     return false;
   }
 }
@@ -323,7 +322,7 @@ function validFirstName(inputFirstName) {
 //validation du nom
 function validLastName(inputLastName) {
   //création de la reg exp pour valider nom
-  let lastNameRegExp = new RegExp("^[a-zA-Z ,.'-]{2,}$", "g");
+  let lastNameRegExp = new RegExp("^[a-zA-ZÀ-ÿ ,.'-]{2,}$", "g");
 
   let testLastName = lastNameRegExp.test(inputLastName.value);
   let lastNameErrorMsg = inputLastName.nextElementSibling;
@@ -332,8 +331,7 @@ function validLastName(inputLastName) {
     lastNameErrorMsg.textContent = " ";
     return true;
   } else {
-    lastNameErrorMsg.textContent =
-      "Minimum 2 caractères et sans caractères spéciaux.";
+    lastNameErrorMsg.textContent = "Minimum 2 caractères, lettres uniquement.";
     return false;
   }
 }
@@ -341,7 +339,7 @@ function validLastName(inputLastName) {
 //validation de l'adresse postale
 function validAddress(inputAddress) {
   //création de la reg exp pour valider l'adresse
-  let addressRegExp = new RegExp("^[a-zA-Z0-9 ,.'-]{2,}$", "g");
+  let addressRegExp = new RegExp("^[a-zA-ZÀ-ÿ0-9 ,.'-]{2,}$", "g");
 
   let testAddress = addressRegExp.test(inputAddress.value);
   let addressErrorMsg = inputAddress.nextElementSibling;
@@ -351,7 +349,7 @@ function validAddress(inputAddress) {
     return true;
   } else {
     addressErrorMsg.textContent =
-      "Minimum 2 caractères et sans caractères spéciaux.";
+      "Minimum 2 caractères, chiffres ou lettres uniquement.";
     return false;
   }
 }
@@ -359,7 +357,7 @@ function validAddress(inputAddress) {
 //validation de la ville
 function validCity(inputCity) {
   //création de la reg exp pour valider la ville
-  let cityRegExp = new RegExp("^[a-zA-Z ,.'-]{2,}$", "g");
+  let cityRegExp = new RegExp("^[a-zA-ZÀ-ÿ ,.'-]{2,}$", "g");
 
   let testCity = cityRegExp.test(inputCity.value);
   let cityErrorMsg = inputCity.nextElementSibling;
@@ -368,8 +366,7 @@ function validCity(inputCity) {
     cityErrorMsg.textContent = " ";
     return true;
   } else {
-    cityErrorMsg.textContent =
-      "Minimum 2 caractères et sans caractères spéciaux.";
+    cityErrorMsg.textContent = "Minimum 2 caractères, lettres uniquement.";
     return false;
   }
 }
@@ -404,7 +401,7 @@ function getFormData() {
     let inputAddress = document.getElementById("address");
     let inputEmail = document.getElementById("email");
     let inputCity = document.getElementById("city");
-
+    //récupérer les données quand tous les champs sont bien validés
     if (
       validFirstName(inputFirstName) &&
       validLastName(inputLastName) &&
@@ -412,7 +409,12 @@ function getFormData() {
       validCity(inputCity) &&
       validEmail(inputEmail)
     ) {
-      alert("Votre commande a bien été prise en compte.");
+      //gérer le cas où le panier est vide
+      if (getCartData.length == 0) {
+        alert("Attention, votre panier est vide ! ");
+      } else {
+        alert("Votre commande a bien été prise en compte.");
+      }
     } else {
       alert("Merci de bien vérifier votre formulaire avant de commander");
     }
@@ -421,8 +423,20 @@ function getFormData() {
 
 getFormData();
 
+function getOrderData() {
+  const idProduct = {
 
+    
+  }
+  
+  const contact = {
+    inputFirstName: document.getElementById("firstName").value,
+    inputLastName: document.getElementById("lastName").value,
+    inputAddress: document.getElementById("address").value,
+    inputEmail: document.getElementById("email").value,
+    inputCity: document.getElementById("city").value,
+  };
+}
+//4.constituer Constituer un objet contact (à partir des données du formulaire) et un tableau de produits.
 
-//constituer Constituer un objet contact (à partir des données du formulaire) et un tableau de produits.
-
-//envoyer les données au back-end
+//5.envoyer les données au back-end

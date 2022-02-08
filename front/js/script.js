@@ -1,6 +1,6 @@
 //fonction auto-invoquée: une fois les produits récupérés, afficher les informations des produits.
 (async function () {
-  const products = await getProducts();
+  const products = await getAllProducts();
 
   //exécuter la fonction "produit" sur chaque élément de "produits".
   products.forEach(product => {
@@ -9,7 +9,7 @@
 })();
 
 //récupérer les produits depuis la porte 3000 d'API
-function getProducts() {
+function getAllProducts() {
   return fetch("http://localhost:3000/api/products")
     .then(function (httpBodyResponse) {
       return httpBodyResponse.json();

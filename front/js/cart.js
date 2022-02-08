@@ -1,3 +1,5 @@
+//------------tableau récapitulatif des achats ----------------
+
 //récupérer les données enregistrées des produits dans le localStorage
 let getCartData = JSON.parse(localStorage.getItem("myCart"));
 
@@ -17,7 +19,8 @@ function getProduct(productId) {
 
 //afficher les données (id, color, quantity, image, alt, nom, prix)
 async function displayCart(getCartData) {
-  let myTotal = 0;
+  let myTotalQuantity = 0;
+  let myTotalPrice = 0;
 
   for (i = 0; i < getCartData.length; i++) {
     let cartData = getCartData[i];
@@ -43,7 +46,7 @@ async function displayCart(getCartData) {
       productDataFromApi
     );
 
-    const cartItemColor = createDivColor(cartItemContentDescription, cartData);
+    createDivColor(cartItemContentDescription, cartData);
 
     createItemPrice(cartItemContentDescription, productDataFromApi.price);
 
@@ -54,9 +57,7 @@ async function displayCart(getCartData) {
       cartItemContentSettings
     );
 
-    const cartItemDivQuantity = createCartItemDivQuantity(
-      cartItemContentSettingsQuantity
-    );
+    createCartItemDivQuantity(cartItemContentSettingsQuantity);
 
     const cartItemQuantity = createQuantityInput(
       cartItemContentSettingsQuantity,
@@ -72,9 +73,13 @@ async function displayCart(getCartData) {
 
     changeCartItemQuantity(cartItemQuantity, cartData, getCartData);
 
-    myTotal += parseInt(cartItemQuantity.value);
+    myTotalQuantity += parseInt(cartItemQuantity.value);
+
+    myTotalPrice = myTotalQuantity * productDataFromApi.price;
   }
-  calculateTotals(myTotal);
+
+  calculateTotalQuantity(myTotalQuantity);
+  calculateTotalPrice(myTotalPrice);
 }
 
 displayCart(getCartData);
@@ -141,8 +146,6 @@ function createDivColor(parent, cartData) {
   const cartItemColor = document.createElement("p");
   parent.appendChild(cartItemColor);
   cartItemColor.textContent = cartData.color;
-
-  return cartItemColor;
 }
 
 //insertion de la p - prix
@@ -153,7 +156,6 @@ function createItemPrice(parent, price) {
 }
 
 //insertion de la div "cart__item__content__settings"
-
 function createDivCartItemContentSettings(parent) {
   const cartItemContentSettings = document.createElement("div");
   parent.appendChild(cartItemContentSettings);
@@ -163,7 +165,6 @@ function createDivCartItemContentSettings(parent) {
 }
 
 //insertion de la div "cart__item__content__settings__quantity"
-
 function createDivCartItemSettingsQuantity(parent) {
   const cartItemContentSettingsQuantity = document.createElement("div");
   parent.appendChild(cartItemContentSettingsQuantity);
@@ -179,8 +180,6 @@ function createCartItemDivQuantity(parent) {
   const cartItemDivQuantity = document.createElement("p");
   parent.appendChild(cartItemDivQuantity);
   cartItemDivQuantity.textContent = "Qté :";
-
-  return createCartItemDivQuantity;
 }
 
 //insertion d'input - quantité
@@ -209,7 +208,6 @@ function createDivCartItemContentSettingsDelete(parent) {
 }
 
 //insertion de <p> "deleteItem"
-
 function createDeleteItem(parent) {
   const deleteItem = document.createElement("p");
   parent.appendChild(deleteItem);
@@ -258,15 +256,173 @@ function changeCartItemQuantity(cartItemQuantity, cartData, getCartData) {
     }
 
     localStorage.setItem("myCart", JSON.stringify(findCartData));
+
+    location.reload();
   });
 }
 
-//calculer la quantité totale et le prix total
-
-function calculateTotals(myTotal) {
+//calculer la quantité totale
+function calculateTotalQuantity(myTotalQuantity) {
   let totalQuantity = document.getElementById("totalQuantity");
-  totalQuantity.textContent += myTotal;
-  console.log(myTotal);
-
-  let totalPrice = document.getElementById("totalPrice");
+  totalQuantity.textContent += myTotalQuantity;
 }
+
+//calculer le prix total
+function calculateTotalPrice(myTotalPrice) {
+  let totalPrice = document.getElementById("totalPrice");
+  totalPrice.textContent = myTotalPrice;
+}
+
+//--------------formulaire de commande ----------------------
+
+let cartOrderForm = document.querySelector(".cart__order__form");
+
+//écouter la modification du prénom
+cartOrderForm.firstName.addEventListener("change", function () {
+  validFirstName(this);
+});
+
+//écouter la modification du nom
+cartOrderForm.lastName.addEventListener("change", function () {
+  validLastName(this);
+});
+
+//écouter la modification de l'adresse
+cartOrderForm.address.addEventListener("change", function () {
+  validAddress(this);
+});
+
+//écouter la modification de la ville
+cartOrderForm.city.addEventListener("change", function () {
+  validCity(this);
+});
+
+//écouter la modification de l'email
+cartOrderForm.email.addEventListener("change", function () {
+  validEmail(this);
+});
+
+//validation du prénom
+function validFirstName(inputFirstName) {
+  //création de la reg exp pour valider prénom
+  let firstNameRegExp = new RegExp("^[a-zA-Z ,.'-]{2,}$", "g");
+
+  let testFirstName = firstNameRegExp.test(inputFirstName.value);
+  let firstNameErrorMsg = inputFirstName.nextElementSibling;
+
+  if (testFirstName) {
+    firstNameErrorMsg.textContent = " ";
+    return true;
+  } else {
+    firstNameErrorMsg.textContent =
+      "Minimum 2 caractères et sans caractères spéciaux.";
+    return false;
+  }
+}
+
+//validation du nom
+function validLastName(inputLastName) {
+  //création de la reg exp pour valider nom
+  let lastNameRegExp = new RegExp("^[a-zA-Z ,.'-]{2,}$", "g");
+
+  let testLastName = lastNameRegExp.test(inputLastName.value);
+  let lastNameErrorMsg = inputLastName.nextElementSibling;
+
+  if (testLastName) {
+    lastNameErrorMsg.textContent = " ";
+    return true;
+  } else {
+    lastNameErrorMsg.textContent =
+      "Minimum 2 caractères et sans caractères spéciaux.";
+    return false;
+  }
+}
+
+//validation de l'adresse postale
+function validAddress(inputAddress) {
+  //création de la reg exp pour valider l'adresse
+  let addressRegExp = new RegExp("^[a-zA-Z0-9 ,.'-]{2,}$", "g");
+
+  let testAddress = addressRegExp.test(inputAddress.value);
+  let addressErrorMsg = inputAddress.nextElementSibling;
+
+  if (testAddress) {
+    addressErrorMsg.textContent = " ";
+    return true;
+  } else {
+    addressErrorMsg.textContent =
+      "Minimum 2 caractères et sans caractères spéciaux.";
+    return false;
+  }
+}
+
+//validation de la ville
+function validCity(inputCity) {
+  //création de la reg exp pour valider la ville
+  let cityRegExp = new RegExp("^[a-zA-Z ,.'-]{2,}$", "g");
+
+  let testCity = cityRegExp.test(inputCity.value);
+  let cityErrorMsg = inputCity.nextElementSibling;
+
+  if (testCity) {
+    cityErrorMsg.textContent = " ";
+    return true;
+  } else {
+    cityErrorMsg.textContent =
+      "Minimum 2 caractères et sans caractères spéciaux.";
+    return false;
+  }
+}
+
+//validation de l'email
+function validEmail(inputEmail) {
+  //création de la reg exp pour valider email
+  let emailRegExp = new RegExp(
+    "^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$",
+    "g"
+  );
+
+  let testEmail = emailRegExp.test(inputEmail.value);
+  let emailErrorMsg = inputEmail.nextElementSibling;
+
+  if (testEmail) {
+    emailErrorMsg.textContent = " ";
+    return true;
+  } else {
+    emailErrorMsg.textContent = "Merci de respecter le format email. ";
+    return false;
+  }
+}
+
+//récupérer des valeurs du formulaire lors du click sur la bouton "commander"
+function getFormData() {
+  cartOrderForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    let inputFirstName = document.getElementById("firstName");
+    let inputLastName = document.getElementById("lastName");
+    let inputAddress = document.getElementById("address");
+    let inputEmail = document.getElementById("email");
+    let inputCity = document.getElementById("city");
+
+    if (
+      validFirstName(inputFirstName) &&
+      validLastName(inputLastName) &&
+      validAddress(inputAddress) &&
+      validCity(inputCity) &&
+      validEmail(inputEmail)
+    ) {
+      alert("Votre commande a bien été prise en compte.");
+    } else {
+      alert("Merci de bien vérifier votre formulaire avant de commander");
+    }
+  });
+}
+
+getFormData();
+
+
+
+//constituer Constituer un objet contact (à partir des données du formulaire) et un tableau de produits.
+
+//envoyer les données au back-end

@@ -1,7 +1,18 @@
 //------------tableau récapitulatif des achats ----------------
 
 //récupérer les données enregistrées des produits dans le localStorage
-let getCartData = JSON.parse(localStorage.getItem("myCart"));
+let getCartData = getCartDataFromStorage();
+
+//gérer le cas où le localStorage est vide
+function getCartDataFromStorage() {
+  let productSavedIntoCart = localStorage.getItem("myCart");
+  if (productSavedIntoCart == null) {
+    return [];
+  } else {
+    //transformer les données du LocalStorage en javascript
+    return JSON.parse(productSavedIntoCart);
+  }
+}
 
 //récupérer les données des produits selon le produit ID depuis la porte 3000 d'API
 function getProduct(productId) {
@@ -391,8 +402,33 @@ function validEmail(inputEmail) {
   }
 }
 
-//récupérer des valeurs du formulaire lors du click sur la bouton "commander"
-function getFormData() {
+//préparer les données validées du formulaires avant d'envoyer au back-end
+function prepareOrderData() {
+  //préparer le tableau de string product ID//préparer le tableau de string product ID
+  const idProducts = [];
+
+  for (let i = 0; i < getCartData.length; i++) {
+    idProducts.push(getCartData[i].id);
+  }
+
+  //préparer les données (produit ID + contact)
+  const contactData = {
+    firstName: document.getElementById("firstName").value,
+    lastName: document.getElementById("lastName").value,
+    address: document.getElementById("address").value,
+    email: document.getElementById("email").value,
+    city: document.getElementById("city").value,
+  };
+
+  const orderData = {
+    products: idProducts,
+    contact: contactData,
+  };
+  return orderData;
+}
+
+//récupérer ces données lors du click sur la bouton "commander"
+function getOrderData() {
   cartOrderForm.addEventListener("submit", function (e) {
     e.preventDefault();
 
@@ -413,6 +449,7 @@ function getFormData() {
       if (getCartData.length == 0) {
         alert("Attention, votre panier est vide ! ");
       } else {
+        sendOrderData();
         alert("Votre commande a bien été prise en compte.");
       }
     } else {
@@ -420,23 +457,33 @@ function getFormData() {
     }
   });
 }
+getOrderData();
 
-getFormData();
+function sendOrderData() {
+  let orderData = prepareOrderData();
+  let jsonOrderData = JSON.stringify(orderData);
 
-function getOrderData() {
-  const idProduct = {
-
-    
-  }
-  
-  const contact = {
-    inputFirstName: document.getElementById("firstName").value,
-    inputLastName: document.getElementById("lastName").value,
-    inputAddress: document.getElementById("address").value,
-    inputEmail: document.getElementById("email").value,
-    inputCity: document.getElementById("city").value,
+  //effectuer une requête POST sur l'API
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: jsonOrderData,
   };
-}
-//4.constituer Constituer un objet contact (à partir des données du formulaire) et un tableau de produits.
 
-//5.envoyer les données au back-end
+  //envoyer toutes les données concernées (prorduct-ID + données contacts) au back-end
+  fetch("http://localhost:3000/api/products/order", options)
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      //vider le localStorage
+      localStorage.clear();
+      //diriger sur la page confirmation en passant l'id dans l'URL
+      window.location.replace(`confirmation.html?order=${data.orderId}`);
+    })
+    .catch(function (error) {
+      alert(error);
+    });
+}

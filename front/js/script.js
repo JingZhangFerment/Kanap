@@ -1,9 +1,9 @@
-//fonction auto-invoquée: une fois les produits récupérés, afficher les informations des produits.
+//une fois les produits récupérés, afficher les informations des produits.
 (async function () {
   const products = await getAllProducts();
 
   //exécuter la fonction "produit" sur chaque élément de "produits".
-  products.forEach(product => {
+  products.forEach((product) => {
     displayProduct(product);
   });
 })();
@@ -18,11 +18,13 @@ function getAllProducts() {
       return products;
     })
     .catch(function (error) {
-      alert(error);
+      alert(
+        "Le serveur ne répond pas. Si le problème persiste, contactez-nous par email : support@name.com."
+      );
     });
 }
 
-//afficher les informations des produits sur la page d'accueil
+//fonction pour afficher les informations des produits sur la page d'accueil
 function displayProduct(product) {
   const productLink = document.createElement("a");
   document.getElementById("items").appendChild(productLink);
@@ -41,6 +43,7 @@ function displayProduct(product) {
   productCard.appendChild(productDescription);
   productDescription.classList.add("productDescription");
 
+  //construction des éléments DOM
   productLink.href = `./product.html?id=${product._id}`;
   productImage.src = product.imageUrl;
   productImage.alt = product.altTxt;

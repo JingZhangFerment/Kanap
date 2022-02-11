@@ -3,7 +3,7 @@
 //récupérer les données enregistrées des produits dans le localStorage
 let getCartData = getCartDataFromStorage();
 
-//gérer le cas où le localStorage est vide
+//si le localStorage est vide
 function getCartDataFromStorage() {
   let productSavedIntoCart = localStorage.getItem("myCart");
   if (productSavedIntoCart == null) {
@@ -14,8 +14,8 @@ function getCartDataFromStorage() {
   }
 }
 
-//récupérer les données des produits selon le produit ID depuis la porte 3000 d'API
-function getProduct(productId) {
+//récupérer le produit selon le produit ID depuis la porte 3000 d'API
+function getOneProduct(productId) {
   return fetch(`http://localhost:3000/api/products/${productId}`)
     .then(function (httpBodyResponse) {
       return httpBodyResponse.json();
@@ -35,8 +35,8 @@ async function displayCart(getCartData) {
 
   for (i = 0; i < getCartData.length; i++) {
     let cartData = getCartData[i];
-
-    const productDataFromApi = await getProduct(cartData.id);
+    //élement des DOM
+    const productDataFromApi = await getOneProduct(cartData.id);
 
     const cartItem = createDivArticle(cartData.id, cartData.color);
 
@@ -80,16 +80,23 @@ async function displayCart(getCartData) {
 
     const deleteItem = createDeleteItem(cartItemContentSettingsDelete);
 
+    //executer la fonction "suppression"
     registerDeleteAction(deleteItem, cartData, getCartData);
 
+    //executer la fonction "changer la quantité"
     changeCartItemQuantity(cartItemQuantity, cartData, getCartData);
 
+    //calculer la quantité totale
     myTotalQuantity += parseInt(cartItemQuantity.value);
 
+    //calculer le prix total
     myTotalPrice = myTotalQuantity * productDataFromApi.price;
   }
 
+  //afficher la quantité totale
   calculateTotalQuantity(myTotalQuantity);
+
+  //afficher le prix totale
   calculateTotalPrice(myTotalPrice);
 }
 
@@ -230,6 +237,7 @@ function createDeleteItem(parent) {
 
 //suppression d'un produit selon son id ET sa couleur
 function registerDeleteAction(deleteItem, cartData, getCartData) {
+  //écouter la modification de "supprimer"
   deleteItem.addEventListener("click", (event) => {
     event.preventDefault();
 
@@ -237,18 +245,24 @@ function registerDeleteAction(deleteItem, cartData, getCartData) {
     let idDelete = cartData.id;
     let colorDelete = cartData.color;
 
+    //garder uniquement les items qui n'ont pas les mêmes id ou les couleurs
     let updatedCartData = getCartData.filter(
       (element) => element.id !== idDelete || element.color !== colorDelete
     );
 
+    //enregistrer dans le localStorage
     localStorage.setItem("myCart", JSON.stringify(updatedCartData));
-    window.alert("Ce produit va être supprimé du panier.");
+
+    alert("Ce produit va être supprimé du panier.");
+
+    //recharger la page
     location.reload();
   });
 }
 
 //modification d'un produit selon son id ET sa couleur
 function changeCartItemQuantity(cartItemQuantity, cartData, getCartData) {
+  //écouter la modification de "quantité"
   cartItemQuantity.addEventListener("change", (event) => {
     event.preventDefault();
 
@@ -259,6 +273,7 @@ function changeCartItemQuantity(cartItemQuantity, cartData, getCartData) {
 
     for (let i = 0; i < findCartData.length; i++) {
       if (
+        //changer la quantité selon son id ET sa couleur
         findCartData[i].id == idChange &&
         findCartData[i].color == colorChange
       ) {
@@ -266,27 +281,29 @@ function changeCartItemQuantity(cartItemQuantity, cartData, getCartData) {
       }
     }
 
+    //enregistrer dans le localStorage
     localStorage.setItem("myCart", JSON.stringify(findCartData));
 
+    //recharger la page
     location.reload();
   });
 }
 
-//calculer la quantité totale
+//fonction pour afficher la quantité totale
 function calculateTotalQuantity(myTotalQuantity) {
-  let totalQuantity = document.getElementById("totalQuantity");
+  const totalQuantity = document.getElementById("totalQuantity");
   totalQuantity.textContent += myTotalQuantity;
 }
 
-//calculer le prix total
+//fonction pour afficher le prix total
 function calculateTotalPrice(myTotalPrice) {
-  let totalPrice = document.getElementById("totalPrice");
+  const totalPrice = document.getElementById("totalPrice");
   totalPrice.textContent = myTotalPrice;
 }
 
 //--------------formulaire de commande ----------------------
 
-let cartOrderForm = document.querySelector(".cart__order__form");
+const cartOrderForm = document.querySelector(".cart__order__form");
 
 //écouter la modification du prénom
 cartOrderForm.firstName.addEventListener("change", function () {
@@ -316,10 +333,10 @@ cartOrderForm.email.addEventListener("change", function () {
 //validation du prénom
 function validFirstName(inputFirstName) {
   //création de la reg exp pour valider prénom
-  let firstNameRegExp = new RegExp("^[a-zA-ZÀ-ÿ ,.'-]{2,}$", "g");
+  const firstNameRegExp = new RegExp("^[a-zA-ZÀ-ÿ ,.'-]{2,}$", "g");
 
-  let testFirstName = firstNameRegExp.test(inputFirstName.value);
-  let firstNameErrorMsg = inputFirstName.nextElementSibling;
+  const testFirstName = firstNameRegExp.test(inputFirstName.value);
+  const firstNameErrorMsg = inputFirstName.nextElementSibling;
 
   if (testFirstName) {
     firstNameErrorMsg.textContent = " ";
@@ -333,10 +350,10 @@ function validFirstName(inputFirstName) {
 //validation du nom
 function validLastName(inputLastName) {
   //création de la reg exp pour valider nom
-  let lastNameRegExp = new RegExp("^[a-zA-ZÀ-ÿ ,.'-]{2,}$", "g");
+  const lastNameRegExp = new RegExp("^[a-zA-ZÀ-ÿ ,.'-]{2,}$", "g");
 
-  let testLastName = lastNameRegExp.test(inputLastName.value);
-  let lastNameErrorMsg = inputLastName.nextElementSibling;
+  const testLastName = lastNameRegExp.test(inputLastName.value);
+  const lastNameErrorMsg = inputLastName.nextElementSibling;
 
   if (testLastName) {
     lastNameErrorMsg.textContent = " ";
@@ -350,10 +367,10 @@ function validLastName(inputLastName) {
 //validation de l'adresse postale
 function validAddress(inputAddress) {
   //création de la reg exp pour valider l'adresse
-  let addressRegExp = new RegExp("^[a-zA-ZÀ-ÿ0-9 ,.'-]{2,}$", "g");
+  const addressRegExp = new RegExp("^[a-zA-ZÀ-ÿ0-9 ,.'-]{2,}$", "g");
 
-  let testAddress = addressRegExp.test(inputAddress.value);
-  let addressErrorMsg = inputAddress.nextElementSibling;
+  const testAddress = addressRegExp.test(inputAddress.value);
+  const addressErrorMsg = inputAddress.nextElementSibling;
 
   if (testAddress) {
     addressErrorMsg.textContent = " ";
@@ -368,10 +385,10 @@ function validAddress(inputAddress) {
 //validation de la ville
 function validCity(inputCity) {
   //création de la reg exp pour valider la ville
-  let cityRegExp = new RegExp("^[a-zA-ZÀ-ÿ ,.'-]{2,}$", "g");
+  const cityRegExp = new RegExp("^[a-zA-ZÀ-ÿ ,.'-]{2,}$", "g");
 
-  let testCity = cityRegExp.test(inputCity.value);
-  let cityErrorMsg = inputCity.nextElementSibling;
+  const testCity = cityRegExp.test(inputCity.value);
+  const cityErrorMsg = inputCity.nextElementSibling;
 
   if (testCity) {
     cityErrorMsg.textContent = " ";
@@ -385,13 +402,13 @@ function validCity(inputCity) {
 //validation de l'email
 function validEmail(inputEmail) {
   //création de la reg exp pour valider email
-  let emailRegExp = new RegExp(
+  const emailRegExp = new RegExp(
     "^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$",
     "g"
   );
 
-  let testEmail = emailRegExp.test(inputEmail.value);
-  let emailErrorMsg = inputEmail.nextElementSibling;
+  const testEmail = emailRegExp.test(inputEmail.value);
+  const emailErrorMsg = inputEmail.nextElementSibling;
 
   if (testEmail) {
     emailErrorMsg.textContent = " ";
@@ -404,14 +421,14 @@ function validEmail(inputEmail) {
 
 //préparer les données validées du formulaires avant d'envoyer au back-end
 function prepareOrderData() {
-  //préparer le tableau de string product ID//préparer le tableau de string product ID
+  //préparer le tableau de string product ID
   const idProducts = [];
 
   for (let i = 0; i < getCartData.length; i++) {
     idProducts.push(getCartData[i].id);
   }
 
-  //préparer les données (produit ID + contact)
+  //préparer les données (produit ID + contact) qui correspond au format demandé par le back-end
   const contactData = {
     firstName: document.getElementById("firstName").value,
     lastName: document.getElementById("lastName").value,
@@ -429,14 +446,16 @@ function prepareOrderData() {
 
 //récupérer ces données lors du click sur la bouton "commander"
 function getOrderData() {
+  //écouter la modification de la bouton "commander"
   cartOrderForm.addEventListener("submit", function (e) {
     e.preventDefault();
 
-    let inputFirstName = document.getElementById("firstName");
-    let inputLastName = document.getElementById("lastName");
-    let inputAddress = document.getElementById("address");
-    let inputEmail = document.getElementById("email");
-    let inputCity = document.getElementById("city");
+    const inputFirstName = document.getElementById("firstName");
+    const inputLastName = document.getElementById("lastName");
+    const inputAddress = document.getElementById("address");
+    const inputEmail = document.getElementById("email");
+    const inputCity = document.getElementById("city");
+
     //récupérer les données quand tous les champs sont bien validés
     if (
       validFirstName(inputFirstName) &&
@@ -445,7 +464,7 @@ function getOrderData() {
       validCity(inputCity) &&
       validEmail(inputEmail)
     ) {
-      //gérer le cas où le panier est vide
+      //si le panier est vide
       if (getCartData.length == 0) {
         alert("Attention, votre panier est vide ! ");
       } else {
@@ -459,9 +478,10 @@ function getOrderData() {
 }
 getOrderData();
 
+//envoyer les données du formulaire et les traiter
 function sendOrderData() {
-  let orderData = prepareOrderData();
-  let jsonOrderData = JSON.stringify(orderData);
+  const orderData = prepareOrderData();
+  const jsonOrderData = JSON.stringify(orderData);
 
   //effectuer une requête POST sur l'API
   const options = {
@@ -484,6 +504,8 @@ function sendOrderData() {
       window.location.replace(`confirmation.html?order=${data.orderId}`);
     })
     .catch(function (error) {
-      alert(error);
+      alert(
+        "Le serveur ne répond pas. Si le problème persiste, contactez-nous par email : support@name.com."
+      );
     });
 }

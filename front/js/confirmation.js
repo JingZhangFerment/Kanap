@@ -4,5 +4,7 @@ orderId.textContent = getOrderId();
 
 //récupérer le "orderID" depuis l'URL
 function getOrderId() {
-    return new URL(location.href).searchParams.get("order");
+    const url = new URL(location.href);
+    const orderIdInURL= url.searchParams.get("order");
+    return orderIdInURL;
   }

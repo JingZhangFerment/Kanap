@@ -24,13 +24,18 @@ They need to implement the website dynamically and set up a test plan once the i
   
 4/ Create the confirmation page: display the ordered number which corresponds to the selected product(s) 
 
-### Technical challenges ###
+### Technical specifications ###
 
 1/ The development must be done in pure JavaScript, without framework or library.
+
 2/ Product data must be retrieved from the provided API.
+
 3/ The cart must be saved properly in the localStorage.
+
 4/ Change the API URL depending on the chosen item.
+
 5/ List the chosen items without duplicating unnecessarily them and calculate the total amount.
+
 6/ The fields of the order form must be validated before sending to the API
 
 ### Back end Prerequisites ###

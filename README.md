@@ -13,8 +13,7 @@ They need to implement the website dynamically and set up a test plan once the i
 2/ Create the single page product: 
   - once the user selected a product, the page will redirect from homepage to the product page. 
   - the following infos should be displayed : image, name, price, description, color options and quantity options on this product page. 
-  - the choices should be taken into account properly.
-</br>
+  - the choices should be taken into account properly.</br>
 3/ Create the cart page: 
   - a list with the choices of the user : product name, color, price and quantities. 
   - possibilities to delete the product(s) or change these quantities. 

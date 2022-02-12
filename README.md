@@ -3,10 +3,12 @@
 This is the front end and back end server for Project 5 of the Web Developer path.
 
 ### Context ###
+
 Kanap has developed a website, with the HTML, CSS and back-end ready.
 They need to implement the website dynamically and set up a test plan once the implementation is done.
 
 ### Functional specifications ###
+
 1/ Create the main products page: all the products will be displayed on this page with details like images, names and descriptions.
 2/ Create the single page product: 
   - once the user selected a product, the page will redirect from homepage to the product page. 
@@ -20,6 +22,7 @@ They need to implement the website dynamically and set up a test plan once the i
 4/ Create the confirmation page: display the ordered number which corresponds to the selected product(s) 
 
 ### Technical challenges ###
+
 1/ The development must be done in pure JavaScript, without framework or library.
 2/ Product data must be retrieved from the provided API.
 3/ The cart must be saved properly in the localStorage.

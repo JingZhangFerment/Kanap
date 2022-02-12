@@ -24,7 +24,9 @@ function getOneProduct(productId) {
       return product;
     })
     .catch(function (error) {
-      alert(error);
+      alert(
+        "Le serveur ne répond pas. Si le problème persiste, contactez-nous par email : support@name.com."
+      );
     });
 }
 
@@ -35,7 +37,7 @@ async function displayCart(getCartData) {
 
   for (i = 0; i < getCartData.length; i++) {
     let cartData = getCartData[i];
-    //élement des DOM
+    //éléments DOM
     const productDataFromApi = await getOneProduct(cartData.id);
 
     const cartItem = createDivArticle(cartData.id, cartData.color);
@@ -285,7 +287,7 @@ function changeCartItemQuantity(cartItemQuantity, cartData, getCartData) {
     localStorage.setItem("myCart", JSON.stringify(findCartData));
 
     //recharger la page
-    location.reload();
+    //location.reload();
   });
 }
 

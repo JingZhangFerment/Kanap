@@ -9,7 +9,9 @@
 
 //récupérer le produit ID (un paramètre d'URL) depuis l'URL de la page courante
 function getProductId() {
-  return new URL(location.href).searchParams.get("id");
+  const url = new URL(location.href);
+  const idInUrl = url.searchParams.get("id");
+  return idInUrl;
 }
 
 //récupérer le produit depuis la porte 3000 d'API
@@ -28,37 +30,34 @@ function getOneProduct(productId) {
     });
 }
 
-//construction des éléments DOM
-const productImage = document.createElement("img");
-document.getElementsByClassName("item__img")[0].appendChild(productImage);
-
-const productName = document.getElementById("title");
-
-const productPrice = document.getElementById("price");
-
-const productDescription = document.getElementById("description");
-
-const productColorsOption = document.createElement("option");
-const productColors = document.getElementById("colors");
-productColors.appendChild(productColorsOption);
-
 //afficher les détails du produit
 function hydrateProduct(product) {
+  const productImage = document.createElement("img");
+  document.getElementsByClassName("item__img")[0].appendChild(productImage);
   productImage.src = product.imageUrl;
   productImage.alt = product.altTxt;
+
+  const productName = document.getElementById("title");
   productName.textContent = product.name;
+
+  const productPrice = document.getElementById("price");
   productPrice.textContent = product.price;
+
+  const productDescription = document.getElementById("description");
   productDescription.textContent = product.description;
 
+  const productColors = document.getElementById("colors");
+
+  //ajouter chaque couleur du produit
   product.colors.forEach((color) => {
+    let productColorsOption = document.createElement("option");
+    productColors.appendChild(productColorsOption);
     productColorsOption.textContent = color;
     productColorsOption.value = color;
   });
 }
 
 //------------------LOCAL STORAGE-------------------------------
-
-//enregistrer les modifications lors de chaque click de la bouton "ajouter du panier"
 const addToCart = document.getElementById("addToCart");
 
 //écouter la modification de "ajouter au panier"
@@ -127,13 +126,13 @@ function addProductToCartIntoStorage(newProduct) {
         oneItemOfSavedProduct.id == newProduct.id &&
         oneItemOfSavedProduct.color == newProduct.color
       ) {
-        //transformer les quantités en chaîne de caractère en un entier dans la base de donnée
-        let newProductQtyInt = parseInt(newProduct.quantity);
+        //convertir la quantité en chaîne de caractère et renvoyer un nombre sur une base décimale
+        let newProductQtyInt = parseInt(newProduct.quantity, 10);
         let oneItemOfSavedProductQtyInt = parseInt(
-          oneItemOfSavedProduct.quantity
+          oneItemOfSavedProduct.quantity, 10
         );
-        oneItemOfSavedProduct.quantity =
-          newProductQtyInt + oneItemOfSavedProductQtyInt;
+
+        oneItemOfSavedProduct.quantity = newProductQtyInt+ oneItemOfSavedProductQtyInt;
 
         didIFindTheProduct = true;
       }

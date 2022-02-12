@@ -26,6 +26,7 @@ function getAllProducts() {
 
 //fonction pour afficher les informations des produits sur la page d'accueil
 function displayProduct(product) {
+   //construction des éléments DOM
   const productLink = document.createElement("a");
   document.getElementById("items").appendChild(productLink);
 
@@ -43,7 +44,6 @@ function displayProduct(product) {
   productCard.appendChild(productDescription);
   productDescription.classList.add("productDescription");
 
-  //construction des éléments DOM
   productLink.href = `./product.html?id=${product._id}`;
   productImage.src = product.imageUrl;
   productImage.alt = product.altTxt;

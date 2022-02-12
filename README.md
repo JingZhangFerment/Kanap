@@ -9,34 +9,34 @@ They need to implement the website dynamically and set up a test plan once the i
 
 ### Functional specifications ###
 
-1/ Create the main products page: all the products will be displayed on this page with details like images, names and descriptions.
+* Create the main products page: all the products will be displayed on this page with details like images, names and descriptions.
 
-2/ Create the single page product: 
+* Create the single page product: 
   - once the user selected a product, the page will redirect from homepage to the product page. 
   - the following infos should be displayed : image, name, price, description, color options and quantity options on this product page. 
   - the choices should be taken into account properly.
   
-3/ Create the cart page: 
+* Create the cart page: 
   - a list with the choices of the user : product name, color, price and quantities. 
   - possibilities to delete the product(s) or change these quantities. 
   - update the total quantity and price
   - check the formula data and take into account in the cart
   
-4/ Create the confirmation page: display the ordered number which corresponds to the selected product(s) 
+* Create the confirmation page: display the ordered number which corresponds to the selected product(s) 
 
 ### Technical specifications ###
 
-1/ The development must be done in pure JavaScript, without framework or library.
+* The development must be done in pure JavaScript, without framework or library.
 
-2/ Product data must be retrieved from the provided API.
+* Product data must be retrieved from the provided API.
 
-3/ The cart must be saved properly in the localStorage.
+* The cart must be saved properly in the localStorage.
 
-4/ Change the API URL depending on the chosen item.
+* Change the API URL depending on the chosen item.
 
-5/ List the chosen items without duplicating unnecessarily them and calculate the total amount.
+* List the chosen items without duplicating unnecessarily them and calculate the total amount.
 
-6/ The fields of the order form must be validated before sending to the API
+* The fields of the order form must be validated before sending to the API
 
 ### Back end Prerequisites ###
 

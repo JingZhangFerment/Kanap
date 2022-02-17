@@ -89,7 +89,7 @@ async function displayCart(getCartData) {
     changeCartItemQuantity(cartItemQuantity, cartData, getCartData);
 
     //calculer la quantité totale
-    myTotalQuantity += parseInt(cartItemQuantity.value);
+    myTotalQuantity += parseInt(cartItemQuantity.value, 10);
 
     //calculer le prix total
     myTotalPrice = myTotalQuantity * productDataFromApi.price;
@@ -111,6 +111,7 @@ function createDivArticle(id, color) {
   cartItem.classList.add("cart__item");
   cartItem.setAttribute("data-id", id);
   cartItem.setAttribute("data-color", color);
+  //cartItem.setAttribute("id", 'div-'+id);
 
   return cartItem;
 }
@@ -259,6 +260,7 @@ function registerDeleteAction(deleteItem, cartData, getCartData) {
 
     //recharger la page
     location.reload();
+    //document.getElementById('div-'+idDelete).style.display = "none";
   });
 }
 
@@ -286,8 +288,10 @@ function changeCartItemQuantity(cartItemQuantity, cartData, getCartData) {
     //enregistrer dans le localStorage
     localStorage.setItem("myCart", JSON.stringify(findCartData));
 
+    alert("Votre panier est à jour");
+
     //recharger la page
-    //location.reload();
+    location.reload();
   });
 }
 
@@ -421,31 +425,6 @@ function validEmail(inputEmail) {
   }
 }
 
-//préparer les données validées du formulaires avant d'envoyer au back-end
-function prepareOrderData() {
-  //préparer le tableau de string product ID
-  const idProducts = [];
-
-  for (let i = 0; i < getCartData.length; i++) {
-    idProducts.push(getCartData[i].id);
-  }
-
-  //préparer les données (produit ID + contact) qui correspond au format demandé par le back-end
-  const contactData = {
-    firstName: document.getElementById("firstName").value,
-    lastName: document.getElementById("lastName").value,
-    address: document.getElementById("address").value,
-    email: document.getElementById("email").value,
-    city: document.getElementById("city").value,
-  };
-
-  const orderData = {
-    products: idProducts,
-    contact: contactData,
-  };
-  return orderData;
-}
-
 //récupérer ces données lors du click sur la bouton "commander"
 function getOrderData() {
   //écouter la modification de la bouton "commander"
@@ -479,6 +458,31 @@ function getOrderData() {
   });
 }
 getOrderData();
+
+//préparer les données validées du formulaires avant d'envoyer au back-end
+function prepareOrderData() {
+  //format demandé par le back-end
+  const contactData = {
+    firstName: document.getElementById("firstName").value,
+    lastName: document.getElementById("lastName").value,
+    address: document.getElementById("address").value,
+    email: document.getElementById("email").value,
+    city: document.getElementById("city").value,
+  };
+
+  //préparer le tableau de string product ID
+  const idProducts = [];
+
+  for (let i = 0; i < getCartData.length; i++) {
+    idProducts.push(getCartData[i].id);
+  }
+
+  const orderData = {
+    products: idProducts,
+    contact: contactData,
+  };
+  return orderData;
+}
 
 //envoyer les données du formulaire et les traiter
 function sendOrderData() {

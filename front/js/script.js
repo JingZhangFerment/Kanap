@@ -26,7 +26,7 @@ function getAllProducts() {
 
 //fonction pour afficher les informations des produits sur la page d'accueil
 function displayProduct(product) {
-   //construction des éléments DOM
+  //construction des éléments DOM
   const productLink = document.createElement("a");
   document.getElementById("items").appendChild(productLink);
 

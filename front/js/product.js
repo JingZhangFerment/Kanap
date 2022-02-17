@@ -73,12 +73,12 @@ addToCart.addEventListener("click", function (event) {
 
   // élément de validation
   let isValid = true;
-
   //avant d'ajouter au panier, vérifrier s'il y a une couleur choisi
   if (productToAddIntoCart.color == "") {
     isValid = false;
     alert("Veuillez sélectionner une couleur pour le canapé.");
   }
+
   //avant d'ajouter au panier, vérifrier s'il y a une quantité choisi
   if (
     productToAddIntoCart.quantity > 100 ||
@@ -117,7 +117,6 @@ function addProductToCartIntoStorage(newProduct) {
 
   //élément de validation
   let didIFindTheProduct = false;
-
   // s'il y a déjà des produits enregistrés dans le localStorage
   if (savedProducts.length > 0) {
     savedProducts.forEach((oneItemOfSavedProduct) => {
@@ -126,32 +125,29 @@ function addProductToCartIntoStorage(newProduct) {
         oneItemOfSavedProduct.id == newProduct.id &&
         oneItemOfSavedProduct.color == newProduct.color
       ) {
+        didIFindTheProduct = true;
         //convertir la quantité en chaîne de caractère et renvoyer un nombre sur une base décimale
         let newProductQtyInt = parseInt(newProduct.quantity, 10);
         let oneItemOfSavedProductQtyInt = parseInt(
-          oneItemOfSavedProduct.quantity, 10
+          oneItemOfSavedProduct.quantity,
+          10
         );
-
-        oneItemOfSavedProduct.quantity = newProductQtyInt+ oneItemOfSavedProductQtyInt;
-
-        didIFindTheProduct = true;
+        //incrémenter la quantité
+        oneItemOfSavedProduct.quantity =
+          newProductQtyInt + oneItemOfSavedProductQtyInt;
       }
     });
-
     // si ce n'est pas le même produit
     if (didIFindTheProduct === false) {
       savedProducts.push(newProduct);
     }
-
     popupConfirmation();
-
     //si le panier est dans le localStorage
   } else {
     savedProducts = [];
     savedProducts.push(newProduct);
     popupConfirmation();
   }
-
   //enregistrer les modifications dans le localStorage
   saveToLocalStorage(savedProducts);
 }

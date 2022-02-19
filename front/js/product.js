@@ -73,13 +73,21 @@ addToCart.addEventListener("click", function (event) {
 
   // élément de validation
   let isValid = true;
-  //avant d'ajouter au panier, vérifrier s'il y a une couleur choisi
+  
+  //avant d'ajouter au panier, vérifier s'il y a une couleur choisi
   if (productToAddIntoCart.color == "") {
     isValid = false;
     alert("Veuillez sélectionner une couleur pour le canapé.");
   }
 
-  //avant d'ajouter au panier, vérifrier s'il y a une quantité choisi
+  //avant d'ajouter au panier, vérifier si la quantité est un chiffre entier
+  let numbers = /^[0-9]+$/;
+  if (!productToAddIntoCart.quantity.match(numbers)) {
+    isValid = false;
+    alert("Veuillez sélectionner un chiffre entier.");
+  }
+
+  //avant d'ajouter au panier, vérifier s'il y a une quantité choisi
   if (
     productToAddIntoCart.quantity > 100 ||
     productToAddIntoCart.quantity < 1
